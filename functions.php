@@ -509,19 +509,6 @@ if(!function_exists('__error')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(!function_exists('__get_memory_size')){
-    function __get_memory_size(){
-        if(!function_exists('exec')){
-            return 0;
-        }
-        exec('free -b', $output);
-        $output = explode(' ', trim(preg_replace('/\s+/', ' ', $output[1])));
-        return (int) $output[1];
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 if(!function_exists('__filesystem')){
     function __filesystem(){
         global $wp_filesystem;
@@ -555,6 +542,19 @@ if(!function_exists('__fix_audio_video_type')){
             }
             return $wp_check_filetype_and_ext;
         }, 10, 5);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__get_memory_size')){
+    function __get_memory_size(){
+        if(!function_exists('exec')){
+            return 0;
+        }
+        exec('free -b', $output);
+        $output = explode(' ', trim(preg_replace('/\s+/', ' ', $output[1])));
+        return (int) $output[1];
     }
 }
 
@@ -839,22 +839,6 @@ if(!function_exists('__one')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(!function_exists('__prepare')){
-    function __prepare($str = '', ...$args){
-        global $wpdb;
-        if(!$args){
-            return $str;
-        }
-        if(strpos($str, '%') === false){
-            return $str;
-        } else {
-            return str_replace("'", '', $wpdb->remove_placeholder_escape($wpdb->prepare(...$args)));
-        }
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 if(!function_exists('__post_type_labels')){
     function __post_type_labels($singular = '', $plural = '', $all = true){
         if(!$singular or !$plural){
@@ -891,6 +875,22 @@ if(!function_exists('__post_type_labels')){
             'item_scheduled' => $singular . ' scheduled.',
             'item_updated' => $singular . ' updated.',
         ];
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__prepare')){
+    function __prepare($str = '', ...$args){
+        global $wpdb;
+        if(!$args){
+            return $str;
+        }
+        if(strpos($str, '%') === false){
+            return $str;
+        } else {
+            return str_replace("'", '', $wpdb->remove_placeholder_escape($wpdb->prepare(...$args)));
+        }
     }
 }
 
@@ -993,6 +993,42 @@ if(!function_exists('__require_closure')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+if(!function_exists('__require_php_jwt')){
+    function __require_php_jwt(){
+        if(class_exists('Firebase\JWT\JWT')){
+            return true;
+        }
+        $library = __require('https://github.com/firebase/php-jwt/archive/refs/tags/v5.2.1.zip', 'php-jwt-5.2.1');
+        if(!$library->success){
+            return $library->to_wp_error();
+        }
+        require_once($library->dir . '/src/BeforeValidException.php');
+        require_once($library->dir . '/src/ExpiredException.php');
+        require_once($library->dir . '/src/JWK.php');
+        require_once($library->dir . '/src/JWT.php');
+        require_once($library->dir . '/src/SignatureInvalidException.php');
+        return true;
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__require_php_xlsxwriter')){
+    function __require_php_xlsxwriter(){
+        if(class_exists('XLSXWriter')){
+            return true;
+        }
+        $library = __require('https://github.com/mk-j/PHP_XLSXWriter/archive/refs/tags/0.38.zip', 'PHP_XLSXWriter-0.38');
+        if(!$library->success){
+            return $library->to_wp_error();
+        }
+        require_once($library->dir . '/xlsxwriter.class.php');
+        return true;
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if(!function_exists('__require_plugin_update_checker')){
     function __require_plugin_update_checker(){
         if(class_exists('Puc_v4_Factory')){
@@ -1035,42 +1071,6 @@ if(!function_exists('__require_tgm_plugin_activation')){
             return $library->to_wp_error();
         }
         require_once($library->dir . '/class-tgm-plugin-activation.php');
-        return true;
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-if(!function_exists('__require_php_jwt')){
-    function __require_php_jwt(){
-        if(class_exists('Firebase\JWT\JWT')){
-            return true;
-        }
-        $library = __require('https://github.com/firebase/php-jwt/archive/refs/tags/v5.2.1.zip', 'php-jwt-5.2.1');
-        if(!$library->success){
-            return $library->to_wp_error();
-        }
-        require_once($library->dir . '/src/BeforeValidException.php');
-        require_once($library->dir . '/src/ExpiredException.php');
-        require_once($library->dir . '/src/JWK.php');
-        require_once($library->dir . '/src/JWT.php');
-        require_once($library->dir . '/src/SignatureInvalidException.php');
-        return true;
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-if(!function_exists('__require_php_xlsxwriter')){
-    function __require_php_xlsxwriter(){
-        if(class_exists('XLSXWriter')){
-            return true;
-        }
-        $library = __require('https://github.com/mk-j/PHP_XLSXWriter/archive/refs/tags/0.38.zip', 'PHP_XLSXWriter-0.38');
-        if(!$library->success){
-            return $library->to_wp_error();
-        }
-        require_once($library->dir . '/xlsxwriter.class.php');
         return true;
     }
 }
