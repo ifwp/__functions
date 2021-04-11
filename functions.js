@@ -1,8 +1,8 @@
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(typeof ldc_add_query_arg !== 'function'){
-    function ldc_add_query_arg(key, value, url){
+if(typeof __add_query_arg !== 'function'){
+    function __add_query_arg(key, value, url){
         'use strict';
         var a = document.createElement('a'),
             href = '';
@@ -52,8 +52,8 @@ if(typeof ldc_add_query_arg !== 'function'){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(typeof ldc_add_query_args !== 'function'){
-    function ldc_add_query_args(args, url){
+if(typeof __add_query_args !== 'function'){
+    function __add_query_args(args, url){
         'use strict';
         var a = document.createElement('a'),
             href = '';
@@ -105,8 +105,8 @@ if(typeof ldc_add_query_args !== 'function'){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(typeof ldc_page_visibility_event !== 'function'){
-    function ldc_page_visibility_event(){
+if(typeof __page_visibility_event !== 'function'){
+    function __page_visibility_event(){
         'use strict';
         var visibilityChange = '';
         if(typeof document.hidden !== 'undefined'){ // Opera 12.10 and Firefox 18 and later support
@@ -124,8 +124,8 @@ if(typeof ldc_page_visibility_event !== 'function'){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(typeof ldc_page_visibility_state !== 'function'){
-    function ldc_page_visibility_state(){
+if(typeof __page_visibility_state !== 'function'){
+    function __page_visibility_state(){
         'use strict';
         var hidden = '';
         if(typeof document.hidden !== 'undefined'){ // Opera 12.10 and Firefox 18 and later support
@@ -143,8 +143,8 @@ if(typeof ldc_page_visibility_state !== 'function'){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(typeof ldc_parse_str !== 'function'){
-    function ldc_parse_str(str){
+if(typeof __parse_str !== 'function'){
+    function __parse_str(str){
         'use strict';
         var i = 0,
             search_object = {},
@@ -158,8 +158,8 @@ if(typeof ldc_parse_str !== 'function'){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(typeof ldc_parse_url !== 'function'){
-    function ldc_parse_url(url, component){
+if(typeof __parse_url !== 'function'){
+    function __parse_url(url, component){
         'use strict';
         var a = document.createElement('a'),
             components = {},
@@ -184,8 +184,8 @@ if(typeof ldc_parse_url !== 'function'){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(typeof ldc_rem_to_px !== 'function'){
-    function ldc_rem_to_px(count){
+if(typeof __rem_to_px !== 'function'){
+    function __rem_to_px(count){
         'use strict';
         var unit = jQuery('html').css('font-size');
     	if(typeof count !== 'undefined' && count > 0){
