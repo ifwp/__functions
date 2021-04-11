@@ -12,7 +12,7 @@ Plugin URI: https://github.com/ifwp/__functions
 Requires at least: 5.0
 Requires PHP: 5.6
 Text Domain: __functions
-Version: 1.4.10
+Version: 1.4.10.1
 */
 
 if(defined('ABSPATH')){

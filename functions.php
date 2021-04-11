@@ -54,6 +54,27 @@ if(!function_exists('__add_image_size')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+if(!function_exists('__admin_enqueue_ace')){
+    function __admin_enqueue_ace(){
+        __one('admin_enqueue_scripts', function(){
+            wp_enqueue_script('ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.min.js', [], '1.4.12', true);
+            wp_enqueue_script('ace-language-tools', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js', ['ace'], '1.4.12', true);
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__admin_enqueue_functions')){
+    function __admin_enqueue_functions(){
+        __one('admin_enqueue_scripts', function(){
+            wp_enqueue_script('__functions', plugin_dir_url(__FILE__) . 'functions.js', ['jquery'], filemtime(plugin_dir_path(__FILE__) . 'functions.js'), true);
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if(!function_exists('__are_plugins_active')){
     function __are_plugins_active($plugins = []){
         if(!is_array($plugins)){
@@ -88,12 +109,12 @@ if(!function_exists('__array_keys_exist')){
 
 if(!function_exists('__attachment_url_to_postid')){
     function __attachment_url_to_postid($url = ''){
-        /** original */
+        // original
         $post_id = __guid_to_postid($url);
         if($post_id){
             return $post_id;
         }
-        /** resized */
+        // resized
         preg_match('/^(.+)(-\d+x\d+)(\.' . substr($url, strrpos($url, '.') + 1) . ')?$/', $url, $matches);
         if($matches){
             $url = $matches[1];
@@ -105,7 +126,7 @@ if(!function_exists('__attachment_url_to_postid')){
                 return $post_id;
             }
         }
-        /** scaled */
+        // scaled
         preg_match('/^(.+)(-scaled)(\.' . substr($url, strrpos($url, '.') + 1) . ')?$/', $url, $matches);
         if($matches){
             $url = $matches[1];
@@ -117,7 +138,7 @@ if(!function_exists('__attachment_url_to_postid')){
                 return $post_id;
             }
         }
-        /** edited */
+        // edited
         preg_match('/^(.+)(-e\d+)(\.' . substr($url, strrpos($url, '.') + 1) . ')?$/', $url, $matches);
         if($matches){
             $url = $matches[1];
@@ -206,6 +227,55 @@ if(!function_exists('__current_screen_is')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+if(!function_exists('__current_time')){
+    function __current_time($type = 'U', $offset_or_tz = ''){ // If $offset_or_tz is an empty string, the output is adjusted with the GMT offset in the WordPress option.
+        if('timestamp' === $type){
+            $type = 'U';
+        }
+        if('mysql' === $type){
+            $type = 'Y-m-d H:i:s';
+        }
+        $timezone = $offset_or_tz ? __timezone($offset_or_tz) : wp_timezone();
+        $datetime = new DateTime('now', $timezone);
+        return $datetime->format($type);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__custom_login_logo')){
+    function __custom_login_logo($attachment_id = 0){
+        __one('login_enqueue_scripts', function() use($attachment_id){
+            if(wp_attachment_is_image($attachment_id)){
+                $custom_logo = wp_get_attachment_image_src($attachment_id, 'medium'); ?>
+    			<style type="text/css">
+    				#login h1 a,
+    				.login h1 a {
+    					background-image: url(<?php echo $custom_logo[0]; ?>);
+    					background-size: <?php echo $custom_logo[1] / 2; ?>px <?php echo $custom_logo[2] / 2; ?>px;
+    					height: <?php echo $custom_logo[2] / 2; ?>px;
+    					width: <?php echo $custom_logo[1] / 2; ?>px;
+    				}
+    			</style><?php
+            }
+		});
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__date_convert')){
+    function __date_convert($string = '', $fromtz = '', $totz = '', $format = 'Y-m-d H:i:s'){
+        $datetime = date_create($string, __timezone($fromtz));
+        if($datetime === false){
+            return gmdate($format, 0);
+        }
+        return $datetime->setTimezone(__timezone($totz))->format($format);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if(!function_exists('__destroy_other_sessions')){
     function __destroy_other_sessions(){
         __one('init', 'wp_destroy_other_sessions');
@@ -280,6 +350,149 @@ if(!function_exists('__download_url')){
     function __download_url(){
         $upload_dir = wp_get_upload_dir();
         return $upload_dir['baseurl'] . '/__downloads';
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_ace')){
+    function __enqueue_ace(){
+        wp_enqueue_script('ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.min.js', [], '1.4.12', true);
+        wp_enqueue_script('ace-language-tools', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js', ['ace'], '1.4.12', true);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_bootstrap')){
+    function __enqueue_bootstrap($ver = 4, $bundle = true){
+        __one('wp_enqueue_scripts', function() use($ver, $bundle){
+            switch($ver){
+                case 4:
+                    wp_enqueue_style('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css', [], '4.6.0');
+                    if($bundle){
+                        wp_enqueue_script('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js', ['jquery'], '4.6.0', true);
+                    } else {
+                        wp_enqueue_script('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js', ['jquery'], '4.6.0', true);
+                    }
+                    break;
+                case 5:
+                    wp_enqueue_style('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css', [], '5.0.0-beta3');
+                    if($bundle){
+                        wp_enqueue_script('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js', [], '5.0.0-beta3', true);
+                    } else {
+                        wp_enqueue_script('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js', [], '5.0.0-beta3', true);
+                    }
+                    break;
+            }
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_bs_custom_file_input')){
+    function __enqueue_bs_custom_file_input(){
+        __one('wp_enqueue_scripts', function(){
+            wp_add_inline_script('bs-custom-file-input', 'jQuery(function(){ bsCustomFileInput.init(); });');
+            wp_enqueue_script('bs-custom-file-input', 'https://cdn.jsdelivr.net/npm/bs-custom-file-input@1.3.4/dist/bs-custom-file-input.min.js', ['jquery'], '1.3.4', true);
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_dashicons')){
+    function __enqueue_dashicons(){
+        __one('wp_enqueue_scripts', function(){
+            wp_enqueue_style('dashicons');
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_fontawesome')){
+    function __enqueue_fontawesome($ver = 5, $pro = false){
+        __one('wp_enqueue_scripts', function() use($ver, $pro){
+            switch($ver){
+                case 3:
+                    wp_enqueue_style('fontawesome', 'https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css', [], '3.2.1');
+                    break;
+                case 4:
+                    wp_enqueue_style('fontawesome', 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css', [], '4.7.0');
+                    break;
+                case 5:
+                    if($pro){
+                        wp_enqueue_style('fontawesome', 'https://pro.fontawesome.com/releases/v5.15.3/css/all.css', [], '5.15.3');
+                    } else {
+                        wp_enqueue_style('fontawesome', 'https://use.fontawesome.com/releases/v5.15.3/css/all.css', [], '5.15.3');
+                    }
+                    break;
+            }
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_fontawesome_kit')){
+    function __enqueue_fontawesome_kit($kit = ''){
+        __one('wp_enqueue_scripts', function() use($kit){
+            $url = wp_http_validate_url($kit);
+            if($url){
+                wp_enqueue_script('fontawesome', $url);
+            } else {
+                wp_enqueue_script('fontawesome', 'https://kit.fontawesome.com/' . rtrim($kit, '.js') . '.js');
+            }
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_functions')){
+    function __enqueue_functions($context = 'both'){
+        __one('wp_enqueue_scripts', function(){
+            wp_enqueue_script('__functions', plugin_dir_url(__FILE__) . 'functions.js', ['jquery'], filemtime(plugin_dir_path(__FILE__) . 'functions.js'), true);
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_jquery')){
+    function __enqueue_jquery(){
+        __one('wp_enqueue_scripts', function(){
+            wp_enqueue_script('jquery');
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_popper')){
+    function __enqueue_popper($ver = 1){
+        __one('wp_enqueue_scripts', function() use($ver){
+            switch($ver){
+                case 1:
+                    wp_enqueue_script('popper', 'https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js', [], '1.16.1', true);
+                    break;
+                case 2:
+                    wp_enqueue_script('popper', 'https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js', [], '2.9.1', true);
+                    break;
+            }
+        });
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__enqueue_stylesheet')){
+    function __enqueue_stylesheet(){
+        __one('wp_enqueue_scripts', function(){
+            wp_enqueue_style(get_stylesheet(), get_stylesheet_uri(), [], filemtime(get_stylesheet_directory() . '/style.css'));
+        });
     }
 }
 
@@ -462,6 +675,28 @@ if(!function_exists('__ksort_deep')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+if(!function_exists('__larger_image_sizes')){
+    function __larger_image_sizes(){
+        __add_image_size('HD', 1280, 1280);
+        __add_image_size('Full HD', 1920, 1920);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__local_login_header')){
+    function __local_login_header(){
+        __one('login_headertext', function($login_headertext){
+			return get_option('blogname');
+		});
+		__one('login_headerurl', function($login_headerurl){
+			return home_url();
+		});
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if(!function_exists('__maybe_generate_attachment_metadata')){
     function __maybe_generate_attachment_metadata($attachment = null){
         $attachment = get_post($attachment);
@@ -529,6 +764,38 @@ if(!function_exists('__md5_to_uuid4')){
 if(!function_exists('__off')){
     function __off($tag = '', $function_to_remove = '', $priority = 10){
         return remove_filter($tag, $function_to_remove, $priority);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__offset_or_tz')){
+    function __offset_or_tz($offset_or_tz = ''){ // Default GMT offset or timezone string. Must be either a valid offset (-12 to 14) or a valid timezone string.
+        if(is_numeric($offset_or_tz)){
+            return [
+                'gmt_offset' => $offset_or_tz,
+                'timezone_string' => '',
+            ];
+        } else {
+            if(preg_match('/^UTC[+-]/', $offset_or_tz)){ // Map UTC+- timezones to gmt_offsets and set timezone_string to empty.
+                return [
+                    'gmt_offset' => intval(preg_replace('/UTC\+?/', '', $offset_or_tz)),
+                    'timezone_string' => '',
+                ];
+            } else {
+                if(in_array($offset_or_tz, timezone_identifiers_list())){
+                    return [
+                        'gmt_offset' => 0,
+                        'timezone_string' => $offset_or_tz,
+                    ];
+                } else {
+                    return [
+                        'gmt_offset' => 0,
+                        'timezone_string' => 'UTC',
+                    ];
+                }
+            }
+        }
     }
 }
 
@@ -774,6 +1041,26 @@ if(!function_exists('__require_tgm_plugin_activation')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+if(!function_exists('__require_php_jwt')){
+    function __require_php_jwt(){
+        if(class_exists('Firebase\JWT\JWT')){
+            return true;
+        }
+        $library = __require('https://github.com/firebase/php-jwt/archive/refs/tags/v5.2.1.zip', 'php-jwt-5.2.1');
+        if(!$library->success){
+            return $library->to_wp_error();
+        }
+        require_once($library->dir . '/src/BeforeValidException.php');
+        require_once($library->dir . '/src/ExpiredException.php');
+        require_once($library->dir . '/src/JWK.php');
+        require_once($library->dir . '/src/JWT.php');
+        require_once($library->dir . '/src/SignatureInvalidException.php');
+        return true;
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if(!function_exists('__require_php_xlsxwriter')){
     function __require_php_xlsxwriter(){
         if(class_exists('XLSXWriter')){
@@ -846,13 +1133,37 @@ if(!function_exists('__sanitize_timeout')){
                 $timeout = $max_execution_time - 1; // Prevents error 504
             }
         }
-        if(isset($_SERVER['HTTP_CF_RAY'])){
+        if(__seems_cloudflare()){
             if(!$timeout or $timeout > 99){
                 $timeout = 99; // Prevents error 524: https://support.cloudflare.com/hc/en-us/articles/115003011431#524error
             }
         }
         return $timeout;
     }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__seems_cloudflare')){
+    function __seems_cloudflare(){
+        return isset($_SERVER['HTTP_CF_RAY']);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__seems_false')){
+    function __seems_false($data = ''){
+        return in_array((string) $data, ['off', 'false', '0', ''], true);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__seems_mysql_date')){
+	function __seems_mysql_date($pattern = ''){
+        return preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $pattern);
+	}
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -877,6 +1188,14 @@ if(!function_exists('__seems_successful')){
             $data = (int) $data;
         }
         return ($data >= 200 and $data < 300);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__seems_true')){
+    function __seems_true($data = ''){
+        return in_array((string) $data, ['on', 'true', '1'], true);
     }
 }
 
@@ -958,6 +1277,7 @@ if(!function_exists('__support_sessions')){
                 if(!array_key_exists('__current_user_id', $_SESSION)){
                     $_SESSION['__current_user_id'] = get_current_user_id();
                 }
+
                 if(!array_key_exists('__utm', $_SESSION)){
                     $_SESSION['__utm'] = [];
 	                foreach($_GET as $key => $value){
@@ -995,6 +1315,34 @@ if(!function_exists('__tgmpa')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+if(!function_exists('__timezone')){
+    function __timezone($offset_or_tz = ''){
+        return new DateTimeZone(__timezone_string($offset_or_tz));
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__timezone_string')){
+    function __timezone_string($offset_or_tz = ''){
+        $offset_or_tz = __offset_or_tz($offset_or_tz);
+        $timezone_string = $offset_or_tz['timezone_string'];
+        if($timezone_string){
+            return $timezone_string;
+        }
+        $offset = floatval($offset_or_tz['gmt_offset']);
+        $hours = intval($offset);
+        $minutes = ($offset - $hours);
+        $sign = ($offset < 0) ? '-' : '+';
+        $abs_hour = abs($hours);
+        $abs_mins = abs($minutes * 60);
+        $tz_offset = sprintf('%s%02d:%02d', $sign, $abs_hour, $abs_mins);
+        return $tz_offset;
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if(!function_exists('__upload')){
     function __upload($file = '', $parent = 0){
         $filetype_and_ext = wp_check_filetype_and_ext($file, $file);
@@ -1025,6 +1373,22 @@ if(!function_exists('__xlsx')){
         }
         return new XLSXWriter(...$args);
     }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+if(!function_exists('__zoom_jwt')){
+	function __zoom_jwt($api_key = '', $api_secret = ''){
+        $r = __require_php_jwt();
+        if(is_wp_error($r)){
+            return $r;
+        }
+        $payload = [
+            'exp' => time() + DAY_IN_SECONDS,
+            'iss' => $api_key,
+        ];
+        return Firebase\JWT\JWT::encode($payload, $api_secret);
+	}
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
