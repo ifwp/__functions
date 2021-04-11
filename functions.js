@@ -28,7 +28,7 @@ if(typeof __add_query_arg !== 'function'){
         }
         if(a.search){
             var search = [],
-                search_object = ldc_parse_str(a.search);
+                search_object = __parse_str(a.search);
             jQuery.each(search_object, function(k, v){
                 if(k != key){
                     search.push(k + '=' + v);
@@ -79,7 +79,7 @@ if(typeof __add_query_args !== 'function'){
         }
         if(a.search){
             var search = [],
-                search_object = ldc_parse_str(a.search);
+                search_object = __parse_str(a.search);
             jQuery.each(search_object, function(k, v){
                 if(!(k in args)){
                     search.push(k + '=' + v);
