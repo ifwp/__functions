@@ -12,7 +12,7 @@ Plugin URI: https://github.com/ifwp/__functions
 Requires at least: 5.0
 Requires PHP: 5.6
 Text Domain: __functions
-Version: 1.4.10.1
+Version: 1.4.30
 */
 
 if(defined('ABSPATH')){
@@ -23,10 +23,16 @@ if(defined('ABSPATH')){
     }
     unset($__fs);
     __build_update_checker('https://github.com/ifwp/__functions', __FILE__, '__functions');
+    __on('admin_enqueue_scripts', function(){
+        wp_enqueue_script('__functions', plugin_dir_url(__FILE__) . 'functions.js', ['jquery'], filemtime(plugin_dir_path(__FILE__) . 'functions.js'), true);
+    });
     __on('after_setup_theme', function(){
         $file = get_stylesheet_directory() . '/__functions.php';
         if(file_exists($file)){
             require_once($file);
         }
+    });
+    __on('wp_enqueue_scripts', function(){
+        wp_enqueue_script('__functions', plugin_dir_url(__FILE__) . 'functions.js', ['jquery'], filemtime(plugin_dir_path(__FILE__) . 'functions.js'), true);
     });
 }

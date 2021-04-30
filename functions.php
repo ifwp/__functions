@@ -65,16 +65,6 @@ if(!function_exists('__admin_enqueue_ace')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(!function_exists('__admin_enqueue_functions')){
-    function __admin_enqueue_functions(){
-        __one('admin_enqueue_scripts', function(){
-            wp_enqueue_script('__functions', plugin_dir_url(__FILE__) . 'functions.js', ['jquery'], filemtime(plugin_dir_path(__FILE__) . 'functions.js'), true);
-        });
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 if(!function_exists('__are_plugins_active')){
     function __are_plugins_active($plugins = []){
         if(!is_array($plugins)){
@@ -445,16 +435,6 @@ if(!function_exists('__enqueue_fontawesome_kit')){
             } else {
                 wp_enqueue_script('fontawesome', 'https://kit.fontawesome.com/' . rtrim($kit, '.js') . '.js');
             }
-        });
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-if(!function_exists('__enqueue_functions')){
-    function __enqueue_functions($context = 'both'){
-        __one('wp_enqueue_scripts', function(){
-            wp_enqueue_script('__functions', plugin_dir_url(__FILE__) . 'functions.js', ['jquery'], filemtime(plugin_dir_path(__FILE__) . 'functions.js'), true);
         });
     }
 }
