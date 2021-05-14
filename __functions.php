@@ -12,27 +12,30 @@ Plugin URI: https://github.com/ifwp/__functions
 Requires at least: 5.0
 Requires PHP: 5.6
 Text Domain: __functions
-Version: 1.4.30
+Version: 1.5.14
 */
 
 if(defined('ABSPATH')){
     require_once(plugin_dir_path(__FILE__) . 'functions.php');
-    $__fs = __filesystem();
-    if(is_wp_error($__fs)){
-        __add_admin_notice('<strong>__' . strtolower(__('Error')) . '</strong>: ' . $__fs->get_error_message());
+    foreach(glob(plugin_dir_path(__FILE__) . 'functions/*.php') as $__f){
+        require_once($__f);
     }
-    unset($__fs);
+    $__f = __filesystem();
+    if(is_wp_error($__f)){
+        __add_admin_notice('<strong>__' . strtolower(__('Error')) . '</strong>: ' . $__f->get_error_message());
+    }
+    unset($__f);
     __build_update_checker('https://github.com/ifwp/__functions', __FILE__, '__functions');
     __on('admin_enqueue_scripts', function(){
-        wp_enqueue_script('__functions', plugin_dir_url(__FILE__) . 'functions.js', ['jquery'], filemtime(plugin_dir_path(__FILE__) . 'functions.js'), true);
+        __enqueue_functions();
     });
     __on('after_setup_theme', function(){
-        $file = get_stylesheet_directory() . '/__functions.php';
-        if(file_exists($file)){
-            require_once($file);
+        $__f = get_stylesheet_directory() . '/__functions.php';
+        if(file_exists($__f)){
+            require_once($__f);
         }
     });
     __on('wp_enqueue_scripts', function(){
-        wp_enqueue_script('__functions', plugin_dir_url(__FILE__) . 'functions.js', ['jquery'], filemtime(plugin_dir_path(__FILE__) . 'functions.js'), true);
+        __enqueue_functions();
     });
 }
