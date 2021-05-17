@@ -100,6 +100,14 @@ if(!function_exists('__download_url')){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+if(!function_exists('__filename')){
+    function __filename($filename = ''){
+        return preg_replace('/\?.*/', '', wp_basename($filename));
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if(!function_exists('__fix_audio_video_type')){
     function __fix_audio_video_type(){
         __one('wp_check_filetype_and_ext', function($wp_check_filetype_and_ext, $file, $filename, $mimes, $real_mime){
@@ -140,7 +148,7 @@ if(!function_exists('__guid_to_postid')){
 if(!function_exists('__in_uploads')){
     function __in_uploads($filename = ''){
         $upload_dir = wp_get_upload_dir();
-        return (strpos($filename, $upload_dir['basedir']) === 0);
+        return strpos($filename, $upload_dir['basedir']) === 0;
     }
 }
 
@@ -177,27 +185,6 @@ if(!function_exists('__maybe_generate_attachment_metadata')){
 		wp_raise_memory_limit('image');
 		wp_maybe_generate_attachment_metadata($attachment);
 		return true;
-    }
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-if(!function_exists('__read_file_chunk')){
-    function __read_file_chunk($handle = null, $chunk_size = 0){
-        $giant_chunk = '';
-    	if(is_resource($handle) and is_int($chunk_size)){
-    		$byte_count = 0;
-    		while(!feof($handle)){
-                $length = apply_filters('__file_chunk_lenght', (8 * KB_IN_BYTES));
-    			$chunk = fread($handle, $length);
-    			$byte_count += strlen($chunk);
-    			$giant_chunk .= $chunk;
-    			if($byte_count >= $chunk_size){
-    				return $giant_chunk;
-    			}
-    		}
-    	}
-        return $giant_chunk;
     }
 }
 

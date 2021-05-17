@@ -12,12 +12,14 @@ Plugin URI: https://github.com/ifwp/__functions
 Requires at least: 5.0
 Requires PHP: 5.6
 Text Domain: __functions
-Version: 1.5.14
+Version: 1.5.17
 */
 
 if(defined('ABSPATH')){
-    require_once(plugin_dir_path(__FILE__) . 'functions.php');
-    foreach(glob(plugin_dir_path(__FILE__) . 'functions/*.php') as $__f){
+    define('__FILE', __FILE__);
+    define('__PATH', plugin_dir_path(__FILE));
+    define('__URL', plugin_dir_url(__FILE));
+    foreach(glob(__PATH . 'functions/*.php') as $__f){
         require_once($__f);
     }
     $__f = __filesystem();
@@ -25,7 +27,7 @@ if(defined('ABSPATH')){
         __add_admin_notice('<strong>__' . strtolower(__('Error')) . '</strong>: ' . $__f->get_error_message());
     }
     unset($__f);
-    __build_update_checker('https://github.com/ifwp/__functions', __FILE__, '__functions');
+    __build_update_checker('https://github.com/ifwp/__functions', __FILE, '__functions');
     __on('admin_enqueue_scripts', function(){
         __enqueue_functions();
     });

@@ -2,6 +2,17 @@
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+if(!function_exists('__require')){
+    function __require($url = '', $dir = ''){
+        if(!class_exists('__require')){
+            require_once(__PATH . 'classes/require.php');
+        }
+        return new __require($url, $dir);
+    }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if(!function_exists('__require_closure')){
     function __require_closure(){
         if(class_exists('Opis\Closure\SerializableClosure')){
